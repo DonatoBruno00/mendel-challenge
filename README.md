@@ -50,7 +50,42 @@ Cada caso de uso es una clase separada que implementa una única operación de n
 - **Explícito**: El nombre de la clase describe la intención (`CreateTransaction`, `GetTransactionsByType`, `CalculateTransactionSum`).
 - **Desacoplado**: Los use cases no conocen HTTP ni persistencia, solo trabajan con entidades de dominio.
 
+## Endpoints
 
+### PUT /transactions/{id}
+Crea una transacción. Si el ID ya existe, devuelve `409 Conflict`.
+
+```json
+Request:
+{
+    "amount": 5000,
+    "type": "cars",
+    "parentId": 10  // opcional
+}
+
+Response: 201 Created
+{
+    "status": "ok"
+}
+```
+
+### GET /transactions/types/{type}
+Devuelve los IDs de todas las transacciones de un tipo.
+
+```json
+Response: 200 OK
+{
+    "transactions": [10, 11, 12]
+}
+```
+
+## Cómo correr
+
+```bash
+./mvnw spring-boot:run
+```
+
+Swagger UI: http://localhost:8080/swagger-ui/index.html
 
 ---
 

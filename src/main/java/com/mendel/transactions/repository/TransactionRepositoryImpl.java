@@ -4,6 +4,8 @@ import com.mendel.transactions.domain.Transaction;
 import com.mendel.transactions.domain.valueObject.TransactionId;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -20,5 +22,10 @@ public class TransactionRepositoryImpl implements TransactionRepository {
     @Override
     public boolean existsById(TransactionId id) {
         return ledger.containsKey(id.getValue());
+    }
+
+    @Override
+    public List<Transaction> findAll() {
+        return new ArrayList<>(ledger.values());
     }
 }
