@@ -89,6 +89,36 @@ Response: 200 OK
 }
 ```
 
+### GET /transactions/audit/update-attempts (Bonus)
+Devuelve los intentos de actualización de transacciones existentes.
+
+```json
+Response: 200 OK
+[
+    {
+        "transactionId": 10,
+        "attemptedAt": "2026-01-15T15:30:00Z"
+    }
+]
+```
+
+## Bonus: Registro de Intentos de Update
+
+Mientras desarrollaba el challenge, me di cuenta de algo: si las transacciones son inmutables y devuelvo `409 Conflict` cuando alguien intenta crear una con un ID existente... ¿qué pasa si eso no fue un error del cliente sino un intento malicioso?
+
+En fintech, alguien intentando "pisar" una transacción existente es una señal de alerta. Por eso decidí agregar:
+
+- Cada vez que se intenta crear una transacción con un ID existente, registro el intento antes de devolver el error
+- Un endpoint para consultar todos estos intentos
+- Esto permite detectar patrones sospechosos (ej: muchos intentos sobre el mismo ID, o desde el mismo origen)
+
+No lo vendería como un sistema de auditoría completo, pero es un primer paso para tener visibilidad sobre comportamientos anómalos.
+
+**Componentes:**
+- `UpdateAttempt`: Entidad con `transactionId` y `attemptedAt`
+- `RegisterUpdateAttemptUseCase`: Registra el intento antes de lanzar la excepción
+- `GetUpdateAttemptsUseCase`: Consulta los intentos registrados
+
 ## Cómo correr
 
 ### Local

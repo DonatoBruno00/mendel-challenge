@@ -4,12 +4,15 @@ import com.mendel.transactions.dto.CreateTransactionRequestDto;
 import com.mendel.transactions.dto.CreateTransactionResponseDto;
 import com.mendel.transactions.dto.GetTransactionSumResponseDto;
 import com.mendel.transactions.dto.GetTransactionsByTypeResponseDto;
+import com.mendel.transactions.dto.UpdateAttemptResponseDto;
 import com.mendel.transactions.service.TransactionService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/transactions")
@@ -37,5 +40,11 @@ public class TransactionController {
     public ResponseEntity<GetTransactionSumResponseDto> getTransactionSum(@PathVariable Long transactionId) {
         GetTransactionSumResponseDto response = transactionService.getTransactionSum(transactionId);
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/audit/update-attempts")
+    public ResponseEntity<List<UpdateAttemptResponseDto>> getUpdateAttempts() {
+        List<UpdateAttemptResponseDto> attempts = transactionService.getUpdateAttempts();
+        return ResponseEntity.ok(attempts);
     }
 }

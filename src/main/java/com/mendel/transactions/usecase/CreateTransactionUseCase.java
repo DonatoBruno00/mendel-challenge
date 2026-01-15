@@ -12,11 +12,13 @@ import org.springframework.stereotype.Component;
 public class CreateTransactionUseCase {
 
     private final TransactionRepository transactionRepository;
+    private final RegisterUpdateAttemptUseCase registerUpdateAttemptUseCase;
 
     public Transaction execute(Transaction transaction) {
         TransactionId id = transaction.getId();
 
         if (transactionRepository.existsById(id)) {
+            registerUpdateAttemptUseCase.execute(id);
             throw new TransactionAlreadyExistsException(id.getValue());
         }
 

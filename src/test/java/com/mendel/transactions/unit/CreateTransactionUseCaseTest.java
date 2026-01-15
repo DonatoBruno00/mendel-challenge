@@ -7,6 +7,7 @@ import com.mendel.transactions.domain.valueObject.TransactionType;
 import com.mendel.transactions.exception.TransactionAlreadyExistsException;
 import com.mendel.transactions.repository.TransactionRepository;
 import com.mendel.transactions.usecase.CreateTransactionUseCase;
+import com.mendel.transactions.usecase.RegisterUpdateAttemptUseCase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,11 +25,14 @@ class CreateTransactionUseCaseTest {
     @Mock
     private TransactionRepository transactionRepository;
 
+    @Mock
+    private RegisterUpdateAttemptUseCase registerUpdateAttemptUseCase;
+
     private CreateTransactionUseCase createTransactionUseCase;
 
     @BeforeEach
     void setUp() {
-        createTransactionUseCase = new CreateTransactionUseCase(transactionRepository);
+        createTransactionUseCase = new CreateTransactionUseCase(transactionRepository, registerUpdateAttemptUseCase);
     }
 
     @Test
@@ -47,10 +51,11 @@ class CreateTransactionUseCaseTest {
         assertNotNull(result);
         assertEquals(transaction.getId(), result.getId());
         verify(transactionRepository).save(transaction);
+        verify(registerUpdateAttemptUseCase, never()).execute(any());
     }
 
     @Test
-    void shouldThrowExceptionWhenTransactionAlreadyExists() {
+    void shouldThrowExceptionAndRegisterAttemptWhenTransactionAlreadyExists() {
         Transaction transaction = Transaction.builder()
                 .id(TransactionId.of(1L))
                 .amount(Amount.of(100.0))
@@ -65,5 +70,6 @@ class CreateTransactionUseCaseTest {
         });
 
         verify(transactionRepository, never()).save(any());
+        verify(registerUpdateAttemptUseCase).execute(transaction.getId());
     }
 }
