@@ -91,8 +91,14 @@ Response: 200 OK
 
 ## Cómo correr
 
+### Local
 ```bash
 ./mvnw spring-boot:run
+```
+
+### Docker
+```bash
+docker-compose up --build
 ```
 
 Swagger UI: http://localhost:8080/swagger-ui/index.html
