@@ -5,8 +5,10 @@ import com.mendel.transactions.domain.valueObject.Amount;
 import com.mendel.transactions.domain.valueObject.TransactionId;
 import com.mendel.transactions.domain.valueObject.TransactionType;
 import com.mendel.transactions.dto.CreateTransactionRequestDto;
+import com.mendel.transactions.dto.GetTransactionsByTypeResponseDto;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Optional;
 
 @Component
@@ -14,7 +16,7 @@ public class TransactionMapper {
 
     public Transaction toTransaction(Long id, CreateTransactionRequestDto request) {
         Optional<TransactionId> parentId = Optional.ofNullable(request.getParentId())
-                .map(value -> TransactionId.of(value));
+                .map(parentMapped -> TransactionId.of(parentMapped));
 
         return Transaction.builder()
                 .id(TransactionId.of(id))
@@ -22,5 +24,9 @@ public class TransactionMapper {
                 .type(TransactionType.of(request.getType()))
                 .parentId(parentId)
                 .build();
+    }
+
+    public GetTransactionsByTypeResponseDto toGetTransactionsByTypeResponse(List<Long> transactionIds) {
+        return new GetTransactionsByTypeResponseDto(transactionIds);
     }
 }

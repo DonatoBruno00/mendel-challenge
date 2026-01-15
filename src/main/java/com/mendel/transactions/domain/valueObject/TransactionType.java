@@ -13,7 +13,7 @@ public final class TransactionType {
 	private final String value;
 
 	public static TransactionType of(String value) {
-		if (value.trim().isEmpty()) {
+		if (value == null || value.trim().isEmpty()) {
 			throw new DomainValidationException("type must be provided");
 		}
 		return new TransactionType(value.trim());

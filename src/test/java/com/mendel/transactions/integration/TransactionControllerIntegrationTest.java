@@ -7,12 +7,16 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
 class TransactionControllerIntegrationTest {
+
+    private static final String ELECTRONICS_TYPE = "electronics";
+    private static final String UNKNOWN_TYPE = "unknown";
 
     @Autowired
     private MockMvc mockMvc;
@@ -124,5 +128,45 @@ class TransactionControllerIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void shouldReturnTransactionIdsByType() throws Exception {
+        String electronicsTransaction1 = """
+                {
+                    "amount": 5000,
+                    "type": "electronics"
+                }
+                """;
+
+        String electronicsTransaction2 = """
+                {
+                    "amount": 3000,
+                    "type": "electronics"
+                }
+                """;
+
+        mockMvc.perform(put("/transactions/600")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(electronicsTransaction1))
+                .andExpect(status().isCreated());
+
+        mockMvc.perform(put("/transactions/601")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(electronicsTransaction2))
+                .andExpect(status().isCreated());
+
+        mockMvc.perform(get("/transactions/types/" + ELECTRONICS_TYPE))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.transactions").isArray())
+                .andExpect(jsonPath("$.transactions.length()").value(2));
+    }
+
+    @Test
+    void shouldReturnEmptyListWhenNoTransactionsOfType() throws Exception {
+        mockMvc.perform(get("/transactions/types/" + UNKNOWN_TYPE))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.transactions").isArray())
+                .andExpect(jsonPath("$.transactions.length()").value(0));
     }
 }
