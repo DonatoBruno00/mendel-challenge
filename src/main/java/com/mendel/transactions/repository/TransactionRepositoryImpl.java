@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Repository
@@ -27,5 +28,10 @@ public class TransactionRepositoryImpl implements TransactionRepository {
     @Override
     public List<Transaction> findAll() {
         return new ArrayList<>(ledger.values());
+    }
+
+    @Override
+    public Optional<Transaction> findById(TransactionId id) {
+        return Optional.ofNullable(ledger.get(id.getValue()));
     }
 }

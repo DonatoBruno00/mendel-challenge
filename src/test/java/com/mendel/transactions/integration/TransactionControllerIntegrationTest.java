@@ -169,4 +169,62 @@ class TransactionControllerIntegrationTest {
                 .andExpect(jsonPath("$.transactions").isArray())
                 .andExpect(jsonPath("$.transactions.length()").value(0));
     }
+
+    @Test
+    void shouldReturnTransactionSumWithNoChildren() throws Exception {
+        String transaction = """
+                {
+                    "amount": 5000,
+                    "type": "cars"
+                }
+                """;
+
+        mockMvc.perform(put("/transactions/700")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(transaction))
+                .andExpect(status().isCreated());
+
+        mockMvc.perform(get("/transactions/sum/700"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.sum").value(5000));
+    }
+
+    @Test
+    void shouldReturnTransitiveSumWithChildren() throws Exception {
+        String parent = """
+                {
+                    "amount": 10000,
+                    "type": "cars"
+                }
+                """;
+
+        String child = """
+                {
+                    "amount": 5000,
+                    "type": "shopping",
+                    "parentId": 800
+                }
+                """;
+
+        mockMvc.perform(put("/transactions/800")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(parent))
+                .andExpect(status().isCreated());
+
+        mockMvc.perform(put("/transactions/801")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(child))
+                .andExpect(status().isCreated());
+
+        mockMvc.perform(get("/transactions/sum/800"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.sum").value(15000));
+    }
+
+    @Test
+    void shouldReturnZeroWhenTransactionNotFound() throws Exception {
+        mockMvc.perform(get("/transactions/sum/9999"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.sum").value(0.0));
+    }
 }
