@@ -50,6 +50,8 @@ Cada caso de uso es una clase separada que implementa una única operación de n
 - **Explícito**: El nombre de la clase describe la intención (`CreateTransaction`, `GetTransactionsByType`, `CalculateTransactionSum`).
 - **Desacoplado**: Los use cases no conocen HTTP ni persistencia, solo trabajan con entidades de dominio.
 
+Esta estructura surgió de hacer iteraciones de Red/Green/Refactor. Eso me llevó a orientar el código hacia casos de uso concretos.
+
 ## Endpoints
 
 ### PUT /transactions/{id}
@@ -88,6 +90,34 @@ Response: 200 OK
     "sum": 8000
 }
 ```
+
+### GET /transactions/audit/update-attempts (Bonus)
+Devuelve los intentos de actualización de transacciones existentes.
+
+```json
+Response: 200 OK
+[
+    {
+        "transactionId": 10,
+        "attemptedAt": "2026-01-15T15:30:00Z"
+    }
+]
+```
+
+## Bonus: Registro de Intentos de Update
+
+Mientras desarrollaba el challenge, me di cuenta de algo: si las transacciones son inmutables y devuelvo `409 Conflict` cuando alguien intenta crear una con un ID existente.
+
+- Cada vez que se intenta crear una transacción con un ID existente, registro el intento antes de devolver el error
+- Un endpoint para consultar todos estos intentos
+- Esto permite detectar patrones sospechosos (ej: muchos intentos sobre el mismo ID, o desde el mismo origen)
+
+ Es un primer paso para tener visibilidad sobre comportamientos anómalos.
+
+**Componentes:**
+- `UpdateAttempt`: Entidad con `transactionId` y `attemptedAt`
+- `RegisterUpdateAttemptUseCase`: Registra el intento antes de lanzar la excepción
+- `GetUpdateAttemptsUseCase`: Consulta los intentos registrados
 
 ## Cómo correr
 

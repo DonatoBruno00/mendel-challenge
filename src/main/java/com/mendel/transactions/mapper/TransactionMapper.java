@@ -1,12 +1,14 @@
 package com.mendel.transactions.mapper;
 
 import com.mendel.transactions.domain.Transaction;
+import com.mendel.transactions.domain.UpdateAttempt;
 import com.mendel.transactions.domain.valueObject.Amount;
 import com.mendel.transactions.domain.valueObject.TransactionId;
 import com.mendel.transactions.domain.valueObject.TransactionType;
 import com.mendel.transactions.dto.CreateTransactionRequestDto;
 import com.mendel.transactions.dto.GetTransactionSumResponseDto;
 import com.mendel.transactions.dto.GetTransactionsByTypeResponseDto;
+import com.mendel.transactions.dto.UpdateAttemptResponseDto;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -33,5 +35,18 @@ public class TransactionMapper {
 
     public GetTransactionSumResponseDto toGetTransactionSumResponse(double sum) {
         return new GetTransactionSumResponseDto(sum);
+    }
+
+    public UpdateAttemptResponseDto toUpdateAttemptResponseDto(UpdateAttempt attempt) {
+        return new UpdateAttemptResponseDto(
+                attempt.getTransactionId().getValue(),
+                attempt.getAttemptedAt().toString()
+        );
+    }
+
+    public List<UpdateAttemptResponseDto> toUpdateAttemptResponseDtoList(List<UpdateAttempt> attempts) {
+        return attempts.stream()
+                .map(this::toUpdateAttemptResponseDto)
+                .toList();
     }
 }
