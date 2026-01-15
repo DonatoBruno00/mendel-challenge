@@ -5,6 +5,7 @@ import com.mendel.transactions.domain.valueObject.Amount;
 import com.mendel.transactions.domain.valueObject.TransactionId;
 import com.mendel.transactions.domain.valueObject.TransactionType;
 import com.mendel.transactions.dto.CreateTransactionRequestDto;
+import com.mendel.transactions.dto.GetTransactionSumResponseDto;
 import com.mendel.transactions.dto.GetTransactionsByTypeResponseDto;
 import org.springframework.stereotype.Component;
 
@@ -28,5 +29,9 @@ public class TransactionMapper {
 
     public GetTransactionsByTypeResponseDto toGetTransactionsByTypeResponse(List<Long> transactionIds) {
         return new GetTransactionsByTypeResponseDto(transactionIds);
+    }
+
+    public GetTransactionSumResponseDto toGetTransactionSumResponse(double sum) {
+        return new GetTransactionSumResponseDto(sum);
     }
 }

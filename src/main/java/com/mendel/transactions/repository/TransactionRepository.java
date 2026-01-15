@@ -4,6 +4,7 @@ import com.mendel.transactions.domain.Transaction;
 import com.mendel.transactions.domain.valueObject.TransactionId;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface TransactionRepository {
 
@@ -12,4 +13,6 @@ public interface TransactionRepository {
     boolean existsById(TransactionId id);
 
     List<Transaction> findAll();
+
+    Optional<Transaction> findById(TransactionId id);
 }

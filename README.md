@@ -79,6 +79,16 @@ Response: 200 OK
 }
 ```
 
+### GET /transactions/sum/{id}
+Calcula la suma transitiva: el monto de la transacción + el monto de todas las transacciones vinculadas recursivamente.
+
+```json
+Response: 200 OK
+{
+    "sum": 8000
+}
+```
+
 ## Cómo correr
 
 ```bash
