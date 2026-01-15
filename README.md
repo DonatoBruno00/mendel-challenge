@@ -50,6 +50,8 @@ Cada caso de uso es una clase separada que implementa una única operación de n
 - **Explícito**: El nombre de la clase describe la intención (`CreateTransaction`, `GetTransactionsByType`, `CalculateTransactionSum`).
 - **Desacoplado**: Los use cases no conocen HTTP ni persistencia, solo trabajan con entidades de dominio.
 
+Esta estructura surgió de hacer iteraciones de Red/Green/Refactor. Eso me llevó a orientar el código hacia casos de uso concretos.
+
 ## Endpoints
 
 ### PUT /transactions/{id}
@@ -104,15 +106,13 @@ Response: 200 OK
 
 ## Bonus: Registro de Intentos de Update
 
-Mientras desarrollaba el challenge, me di cuenta de algo: si las transacciones son inmutables y devuelvo `409 Conflict` cuando alguien intenta crear una con un ID existente... ¿qué pasa si eso no fue un error del cliente sino un intento malicioso?
-
-En fintech, alguien intentando "pisar" una transacción existente es una señal de alerta. Por eso decidí agregar:
+Mientras desarrollaba el challenge, me di cuenta de algo: si las transacciones son inmutables y devuelvo `409 Conflict` cuando alguien intenta crear una con un ID existente.
 
 - Cada vez que se intenta crear una transacción con un ID existente, registro el intento antes de devolver el error
 - Un endpoint para consultar todos estos intentos
 - Esto permite detectar patrones sospechosos (ej: muchos intentos sobre el mismo ID, o desde el mismo origen)
 
-No lo vendería como un sistema de auditoría completo, pero es un primer paso para tener visibilidad sobre comportamientos anómalos.
+ Es un primer paso para tener visibilidad sobre comportamientos anómalos.
 
 **Componentes:**
 - `UpdateAttempt`: Entidad con `transactionId` y `attemptedAt`
