@@ -37,11 +37,6 @@ Lo aprendí cuando vi todas las capacitaciones de Robert C Martin, como contenid
 
 Las transacciones son **inmutables**. Una vez creadas, no se pueden modificar. Si alguien intenta crear una transacción con un ID que ya existe, devuelvo `409 Conflict`.
 
-¿Por qué? Porque estamos en fintech. Cambiar una transacción que ya existe es peligroso:
-- Rompe la integridad de los datos históricos
-- Complica la auditoría
-- Abre la puerta a fraudes
-
 ### ¿Por qué Use Cases?
 
 Cada caso de uso es una clase separada que implementa una única operación de negocio:
