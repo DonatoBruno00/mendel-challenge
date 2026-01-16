@@ -31,7 +31,7 @@ Los Value Objects me permiten:
 - Que el código sea más expresivo (leer `Amount` es más claro que leer `double`)
 - Que el compilador me ayude a no mezclar cosas (no puedo pasar un `TransactionId` donde espero un `Amount`)
 
-Lo aprendí cuando vi todas las capacitaciones de Robert C Martin, como contenido adicional: https://refactoring.guru/smells/primitive-obsession
+Lo aprendí con el contenido de Robert C Martin, aca un articulo al respecto de Martin fowler https://refactoring.guru/smells/primitive-obsession
 
 ### Inmutabilidad de Transacciones
 
